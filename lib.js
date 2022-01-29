@@ -24,8 +24,13 @@ const getMapFile = (loc, filename) => {
     return file;
 };
 
+const mapAvailability = (loc, filename) => {
+    return fs.existsSync(path.join(loc, filename));
+}
+
 module.exports = {
     mapCount,
     getMapFile,
-    mapBatch
+    mapBatch,
+    mapAvailability
 }

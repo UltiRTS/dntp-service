@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const {port, mapLocation} = require('./config');
-const {mapCount, getMapFile, mapBatch} = require('./lib');
+const {mapCount, getMapFile, mapBatch, mapAvailability} = require('./lib');
 
 const BATCH_PER_PAGE = 10;
 
@@ -66,6 +66,14 @@ app.get('/batch_limit', (req, res) => {
 
     res.json({
         batchLimit: parseInt(mapLength / BATCH_PER_PAGE) + 1
+    });
+    res.end();
+});
+
+app.get('/map_available/:filename', (req, res) => {
+    const filename = req.params.filename;
+    res.json({
+        available: mapAvailability(mapLocation, filename)
     });
     res.end();
 });
