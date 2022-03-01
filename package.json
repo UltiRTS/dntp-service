@@ -9,6 +9,8 @@
   "author": "Chan",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.17.2"
+    "@vscode/sqlite3": "^5.0.7",
+    "express": "^4.17.2",
+    "knex": "^1.0.3"
   }
 }

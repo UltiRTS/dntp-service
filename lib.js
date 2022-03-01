@@ -1,36 +1,27 @@
-const fs = require('fs');
-const path = require('path');
-
-const mapCount = (loc) => {
-    const list = fs.readdirSync(loc).filter(file => {
-        return file.endsWith('.sd7') || file.endsWith('.sdz');
-    });
-
-    return list.length;
+async function vague_search(knex, name) {
+    return await knex('maps').where('map_name', 'like', '%' + name + '%')
+        .select('map_name', 'map_filename', 'minimap_filename', 'map_hash');
 }
 
-const mapBatch = (loc, start, end) => {
-    const list = fs.readdirSync(loc).filter(file => {
-        return file.endsWith('.sd7') ||  file.endsWith('.sdz');
-    });
+async function batch_filter(knex, batch) {
+    return await knex('maps').limit(30).offset(batch * 30)
+    .select('map_name', 'map_filename', 'minimap_filename', 'map_hash')
+}
 
-    return list.slice(start, end); 
-};
+function check_ligal(str) {
+    if(typeof(str) !== 'string') return false;
 
-
-// use try catch in case of error
-const getMapFile = (loc, filename) => {
-    var file = fs.readFileSync(path.join(loc, filename));
-    return file;
-};
-
-const mapAvailability = (loc, filename) => {
-    return fs.existsSync(path.join(loc, filename));
+    const allowed = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_';
+    for(let i=0; i<str.length; i++) {
+        if(!allowed.includes(str[i])) {
+            return false;
+        }
+    }
+    return true;
 }
 
 module.exports = {
-    mapCount,
-    getMapFile,
-    mapBatch,
-    mapAvailability
+    vague_search,
+    batch_filter,
+    check_ligal   
 }

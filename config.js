@@ -1,7 +1,7 @@
-const mapLocation = './maps';
+const dntpWorkDir = './workdir'
 const port = 3000;
 
 module.exports = {
-    mapLocation,
+    dntpWorkDir,
     port
 };
