@@ -1,11 +1,15 @@
 async function vague_search(knex, name) {
     return await knex('maps').where('map_name', 'like', '%' + name + '%')
-        .select('map_name', 'map_filename', 'minimap_filename', 'map_hash');
+        .select('id', 'map_name', 'map_filename', 'minimap_filename', 'map_hash');
 }
 
 async function batch_filter(knex, batch) {
     return await knex('maps').limit(30).offset(batch * 30)
-    .select('map_name', 'map_filename', 'minimap_filename', 'map_hash')
+    .select('id', 'map_name', 'map_filename', 'minimap_filename', 'map_hash')
+}
+
+async function exists(knex, id) {
+    return (await knex('maps').where('id', id).select('id')).length > 0;
 }
 
 function check_ligal(str) {
@@ -23,5 +27,6 @@ function check_ligal(str) {
 module.exports = {
     vague_search,
     batch_filter,
-    check_ligal   
+    check_ligal,
+    exists
 }

@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const Knex = require('knex');
 const {port, dntpWorkDir} = require('./config');
-const {vague_search, batch_filter, check_ligal} = require('./lib');
+const {vague_search, batch_filter, check_ligal, exists} = require('./lib');
 
 var knex = Knex({
     client: 'sqlite3',
@@ -86,6 +86,22 @@ app.get('/map_list/:batch', async (req, res) => {
     } catch(e) {
         res.send(JSON.stringify({
             error: 'batch request error'
+        }));
+        res.end();
+    }
+});
+
+app.get('/exists/:id', async (req, res) => {
+    const id = req.params.id;
+    try {
+        const existance = await exists(knex, id);
+        res.send(JSON.stringify({
+            existance
+        }));
+        res.end();
+    } catch(e) {
+        res.send(JSON.stringify({
+            error: 'exists request error'
         }));
         res.end();
     }
