@@ -24,9 +24,25 @@ function check_ligal(str) {
     return true;
 }
 
+async function get_map_by_id(knex, id) {
+    const allowed = '0123456789';
+    for(let i=0; i<id.length; i++) {
+        if(!allowed.includes(id[i])) {
+            return "";
+        }
+    }
+
+    const res = (await knex('maps').where('id', '=', id)
+    .select('id', 'map_name', 'map_filename', 'minimap_filename', 'map_hash'));
+    if(res.length === 0) return "";
+
+    return res[0];
+}
+
 module.exports = {
     vague_search,
     batch_filter,
     check_ligal,
-    exists
+    exists,
+    get_map_by_id
 }

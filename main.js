@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const Knex = require('knex');
 const {port, dntpWorkDir} = require('./config');
-const {vague_search, batch_filter, check_ligal, exists} = require('./lib');
+const {vague_search, batch_filter, check_ligal, exists, get_map_by_id} = require('./lib');
 
 var knex = Knex({
     client: 'sqlite3',
@@ -105,6 +105,23 @@ app.get('/exists/:id', async (req, res) => {
         }));
         res.end();
     }
+});
+
+app.get('/maps/:id', async (req, res) => {
+    const id = req.params.id;
+    try {
+        const map = await get_map_by_id(knex, id);
+        res.send({
+            prefix: 'http://ulti-repo.eterea.uk/dNTPDl/tmpMap/',
+            map
+        });
+        res.end();
+    } catch(e) {
+        res.send(JSON.stringify({
+            error: 'get map by id request error'
+        }));
+        res.end();
+    }   
 });
 
 app.listen(port, () => {
