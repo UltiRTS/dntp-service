@@ -15,7 +15,7 @@ async function exists(knex, id) {
 function check_ligal(str) {
     if(typeof(str) !== 'string') return false;
 
-    const allowed = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_';
+    const allowed = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_.';
     for(let i=0; i<str.length; i++) {
         if(!allowed.includes(str[i])) {
             return false;
@@ -39,10 +39,27 @@ async function get_map_by_id(knex, id) {
     return res[0];
 }
 
+async function get_archive(knex) {
+    const res = (await knex('archives')
+    .select('id', 'zip_name','extract_to', 'zip_hash', 'ipfs_addr'));
+
+    return res;
+}
+
+async function get_archive_file(knex, filename) {
+    const res = (await knex('archives')
+    .where('zip_name', '=', filename)
+    .select('id', 'zip_name','extract_to', 'zip_hash', 'ipfs_addr'));
+
+    return res[0];
+}
+
 module.exports = {
     vague_search,
     batch_filter,
     check_ligal,
     exists,
-    get_map_by_id
+    get_map_by_id,
+    get_archive,
+    get_archive_file
 }

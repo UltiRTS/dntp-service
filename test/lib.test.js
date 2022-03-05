@@ -1,4 +1,4 @@
-const {vague_search, batch_filter, get_map_by_id} = require('../lib');
+const {vague_search, batch_filter, get_map_by_id, get_archive} = require('../lib');
 const {dntpWorkDir}=  require('../config');
 const knex = require('knex')({
     client: 'sqlite3',
@@ -16,6 +16,11 @@ const main = async () => {
     console.log(res);
 
     res = await get_map_by_id(knex, '7718');
+    console.log('==============================');
+    console.log(res);
+
+    console.log(typeof get_archive);
+    res = await get_archive(knex);
     console.log('==============================');
     console.log(res);
     

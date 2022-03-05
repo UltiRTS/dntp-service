@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const Knex = require('knex');
 const {port, dntpWorkDir} = require('./config');
-const {vague_search, batch_filter, check_ligal, exists, get_map_by_id} = require('./lib');
+const {vague_search, batch_filter, check_ligal, exists, get_map_by_id, get_archive, get_archive_file} = require('./lib');
 
 var knex = Knex({
     client: 'sqlite3',
@@ -123,6 +123,41 @@ app.get('/maps/:id', async (req, res) => {
         res.end();
     }   
 });
+
+app.get('/archive/:filename', async (req, res) => {
+    const filename = req.params.filename;
+    try {
+        if(!check_ligal(filename)) throw new Error('illegal filename');
+        const file = await get_archive_file(knex, filename);
+        res.send({
+            prefix: 'http://ulti-repo.eterea.uk/dNTPDl/archives/',
+            file
+        });
+        res.end();
+    } catch(e) {
+        res.send(JSON.stringify({
+            error: 'get archive file request error'
+        }));
+        res.end();
+    }
+})
+
+app.get('/archives', async (req, res) => {
+    try {
+        const files = await get_archive(knex);
+        res.send({
+            prefix: 'http://ulti-repo.eterea.uk/dNTPDl/archives/',
+            files
+        });
+        res.end();
+    } catch(e) {
+        console.log(e);
+        res.send(JSON.stringify({
+            error: 'get archive request error'
+        }));
+        res.end();
+    }
+})
 
 app.listen(port, () => {
     console.log(`Listening on port ${port}`);
