@@ -1,13 +1,17 @@
 const express = require('express');
 const app = express();
 const Knex = require('knex');
-const {port, dntpWorkDir} = require('./config');
+const {port, mysql_dbname, mysql_username, mysql_password} = require('./config');
 const {vague_search, batch_filter, check_ligal, exists, get_map_by_id, get_archive, get_archive_file} = require('./lib');
 
 var knex = Knex({
-    client: 'sqlite3',
+    client: 'mysql',
     connection: {
-        filename: dntpWorkDir + '/info.db'
+        host: '127.0.0.1',
+        port: 3306,
+        user: mysql_username,
+        password: mysql_password,
+        database: mysql_dbname
     }
 })
 console.log('==============================');
@@ -24,9 +28,13 @@ function middleWare(req, res, next) {
         updateTime = now;
         knex.destroy();
         knex = Knex({
-            client: 'sqlite3',
+            client: 'mysql',
             connection: {
-                filename: dntpWorkDir + '/info.db'
+                host: '127.0.0.1',
+                port: 3306,
+                user: mysql_username,
+                password: mysql_password,
+                database: mysql_dbname
             }
         })
     }

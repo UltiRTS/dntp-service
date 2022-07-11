@@ -41,7 +41,7 @@ async function get_map_by_id(knex, id) {
 
 async function get_archive(knex) {
     const res = (await knex('archives')
-    .select('id', 'zip_name','extract_to', 'zip_hash', 'ipfs_addr'));
+    .select('id', 'zip_name','extract_to', 'zip_hash'));
 
     return res;
 }
@@ -49,7 +49,7 @@ async function get_archive(knex) {
 async function get_archive_file(knex, filename) {
     const res = (await knex('archives')
     .where('zip_name', '=', filename)
-    .select('id', 'zip_name','extract_to', 'zip_hash', 'ipfs_addr'));
+    .select('id', 'zip_name','extract_to', 'zip_hash'));
 
     return res[0];
 }
