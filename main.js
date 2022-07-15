@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const Knex = require('knex');
-const {port, mysql_dbname, mysql_username, mysql_password} = require('./config');
+const {port, mysql_dbname, mysql_username, mysql_password, service_prefix} = require('./config');
 const {vague_search, batch_filter, check_ligal, exists, get_map_by_id, get_archive, get_archive_file} = require('./lib');
 
 var knex = Knex({
@@ -62,7 +62,7 @@ app.get('/vague_search/:name', async (req, res) => {
     try {
         const maps = await vague_search(knex, name);
         const toClient = {
-            prefix: 'http://ulti-repo.eterea.uk/dNTPDl/tmpMap/',
+            prefix: service_prefix+ '/maps/',
             maps
         };
         res.send(toClient);
@@ -78,6 +78,7 @@ app.get('/map_list/:batch', async (req, res) => {
     const batch = parseInt(req.params.batch);
     if( batch === undefined) {
         res.json({
+            success: false,
             error: 'emtpy batch is not allowed'
         });
         res.end();
@@ -86,13 +87,15 @@ app.get('/map_list/:batch', async (req, res) => {
     try {
         const maps = await batch_filter(knex, batch);
         const toClient = {
-            prefix: 'http://ulti-repo.eterea.uk/dNTPDl/tmpMap/',
+            success: true,
+            prefix: service_prefix + '/maps/',
             maps
         }
         res.send(toClient);
         res.end();
     } catch(e) {
         res.send(JSON.stringify({
+            success: false,
             error: 'batch request error'
         }));
         res.end();
@@ -104,11 +107,13 @@ app.get('/exists/:id', async (req, res) => {
     try {
         const existance = await exists(knex, id);
         res.send(JSON.stringify({
+            success: true,
             existance
         }));
         res.end();
     } catch(e) {
         res.send(JSON.stringify({
+            success: false,
             error: 'exists request error'
         }));
         res.end();
@@ -120,12 +125,14 @@ app.get('/maps/:id', async (req, res) => {
     try {
         const map = await get_map_by_id(knex, id);
         res.send({
-            prefix: 'http://ulti-repo.eterea.uk/dNTPDl/tmpMap/',
+            success: true,
+            prefix: service_prefix + '/maps/',
             map
         });
         res.end();
     } catch(e) {
         res.send(JSON.stringify({
+            success: false,
             error: 'get map by id request error'
         }));
         res.end();
@@ -138,12 +145,14 @@ app.get('/archive/:filename', async (req, res) => {
         if(!check_ligal(filename)) throw new Error('illegal filename');
         const file = await get_archive_file(knex, filename);
         res.send({
-            prefix: 'http://ulti-repo.eterea.uk/dNTPDl/archives/',
+            success: true,
+            prefix: service_prefix + '/archives/',
             file
         });
         res.end();
     } catch(e) {
         res.send(JSON.stringify({
+            success: false,
             error: 'get archive file request error'
         }));
         res.end();
@@ -154,13 +163,16 @@ app.get('/archives', async (req, res) => {
     try {
         const files = await get_archive(knex);
         res.send({
-            prefix: 'http://ulti-repo.eterea.uk/dNTPDl/archives/',
+            success: true,
+            prefix: service_prefix + '/archives/',
             files
         });
         res.end();
     } catch(e) {
         console.log(e);
         res.send(JSON.stringify({
+            success: false,
+            prefix: service_prefix + '/archives/',
             error: 'get archive request error'
         }));
         res.end();
