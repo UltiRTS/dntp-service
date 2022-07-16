@@ -57,6 +57,7 @@ app.get('/vague_search/:name', async (req, res) => {
             error: 'illegal name'
         }))
         res.end();
+        return;
     }
 
     try {
@@ -65,7 +66,7 @@ app.get('/vague_search/:name', async (req, res) => {
             prefix: service_prefix+ '/maps/',
             maps
         };
-        res.send(toClient);
+        res.send(JSON.stringify(toClient));
     } catch(e) {
         res.send(JSON.stringify({
             error: 'vague request error' 
@@ -82,6 +83,7 @@ app.get('/map_list/:batch', async (req, res) => {
             error: 'emtpy batch is not allowed'
         });
         res.end();
+        return;
     }
 
     try {
@@ -91,7 +93,7 @@ app.get('/map_list/:batch', async (req, res) => {
             prefix: service_prefix + '/maps/',
             maps
         }
-        res.send(toClient);
+        res.send(JSON.stringify(toClient));
         res.end();
     } catch(e) {
         res.send(JSON.stringify({
@@ -124,11 +126,11 @@ app.get('/maps/:id', async (req, res) => {
     const id = req.params.id;
     try {
         const map = await get_map_by_id(knex, id);
-        res.send({
+        res.send(JSON.stringify({
             success: true,
             prefix: service_prefix + '/maps/',
             map
-        });
+        }));
         res.end();
     } catch(e) {
         res.send(JSON.stringify({
@@ -144,11 +146,11 @@ app.get('/archive/:filename', async (req, res) => {
     try {
         if(!check_ligal(filename)) throw new Error('illegal filename');
         const file = await get_archive_file(knex, filename);
-        res.send({
+        res.send(JSON.stringify({
             success: true,
             prefix: service_prefix + '/archives/',
             file
-        });
+        }));
         res.end();
     } catch(e) {
         res.send(JSON.stringify({
@@ -162,11 +164,11 @@ app.get('/archive/:filename', async (req, res) => {
 app.get('/archives', async (req, res) => {
     try {
         const files = await get_archive(knex);
-        res.send({
+        res.send(JSON.stringify({
             success: true,
             prefix: service_prefix + '/archives/',
             files
-        });
+        }));
         res.end();
     } catch(e) {
         console.log(e);
