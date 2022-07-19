@@ -12,6 +12,11 @@ async function exists(knex, id) {
     return (await knex('maps').where('id', id).select('id')).length > 0;
 }
 
+async function max_batch(knex) {
+    const res = await knex('maps').count('id as count');
+    return Math.floor(res[0].count / 30);
+}
+
 function check_ligal(str) {
     if(typeof(str) !== 'string') return false;
 
@@ -61,5 +66,6 @@ module.exports = {
     exists,
     get_map_by_id,
     get_archive,
-    get_archive_file
+    get_archive_file,
+    max_batch
 }

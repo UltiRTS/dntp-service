@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const Knex = require('knex');
 const {port, mysql_dbname, mysql_username, mysql_password, service_prefix} = require('./config');
-const {vague_search, batch_filter, check_ligal, exists, get_map_by_id, get_archive, get_archive_file} = require('./lib');
+const {vague_search, batch_filter, check_ligal, exists, get_map_by_id, get_archive, get_archive_file, max_batch} = require('./lib');
 
 var knex = Knex({
     client: 'mysql',
@@ -74,6 +74,20 @@ app.get('/vague_search/:name', async (req, res) => {
     }
     res.end();
 });
+
+app.get('/max_batch', async (req, res) => {
+    try {
+        const max = await max_batch(knex);
+        res.send(JSON.stringify({
+            max
+        }));
+    } catch(e) {
+        console.log(e)
+        res.send(JSON.stringify({
+            error: 'max batch error' 
+        }));
+    }
+})
 
 app.get('/map_list/:batch', async (req, res) => {
     const batch = parseInt(req.params.batch);
