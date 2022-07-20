@@ -20,7 +20,7 @@ async function max_batch(knex) {
 function check_ligal(str) {
     if(typeof(str) !== 'string') return false;
 
-    const allowed = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_.';
+    const allowed = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_. ';
     for(let i=0; i<str.length; i++) {
         if(!allowed.includes(str[i])) {
             return false;

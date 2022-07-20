@@ -51,7 +51,8 @@ app.get('/', (req, res) => {
 });
 
 app.get('/vague_search/:name', async (req, res) => {
-    const name = req.params.name;
+    let name = decodeURIComponent(req.params.name);
+
     if(!check_ligal(name)) {
         res.send(JSON.stringify({
             error: 'illegal name'
