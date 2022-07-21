@@ -59,6 +59,25 @@ async function get_archive_file(knex, filename) {
     return res[0];
 }
 
+async function get_archive_by_id(knex, id) {
+    const res = (await knex('archives').where('id', '=', id).select('id', 'zip_name','extract_to', 'zip_hash'));
+    return res[0];
+}
+
+async function get_latest_systemconf(knex) {
+
+    const query = (await knex('system_config').orderBy('id', 'desc').limit(1))[0];
+
+    const res = {
+        id: query.id,
+        config_name: query.config_name,
+        engine_archive_id: query.engine,
+        mod_archive_id: query.mod,
+    }
+
+    return res;
+}
+
 module.exports = {
     vague_search,
     batch_filter,
@@ -67,5 +86,7 @@ module.exports = {
     get_map_by_id,
     get_archive,
     get_archive_file,
-    max_batch
+    max_batch,
+    get_latest_systemconf,
+    get_archive_by_id
 }

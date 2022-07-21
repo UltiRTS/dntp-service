@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const Knex = require('knex');
 const {port, mysql_dbname, mysql_username, mysql_password, service_prefix} = require('./config');
-const {vague_search, batch_filter, check_ligal, exists, get_map_by_id, get_archive, get_archive_file, max_batch} = require('./lib');
+const {vague_search, batch_filter, check_ligal, exists, get_map_by_id, get_archive, get_archive_by_id, max_batch, get_latest_systemconf} = require('./lib');
 
 var knex = Knex({
     client: 'mysql',
@@ -156,24 +156,23 @@ app.get('/maps/:id', async (req, res) => {
     }   
 });
 
-app.get('/archive/:filename', async (req, res) => {
-    const filename = req.params.filename;
+app.get('/archive/:id', async (req, res) => {
+    const id = req.params.id;
     try {
-        if(!check_ligal(filename)) throw new Error('illegal filename');
-        const file = await get_archive_file(knex, filename);
+        const archive = await get_archive_by_id(knex, id);
         res.send(JSON.stringify({
             success: true,
-            prefix: service_prefix + '/archives/',
-            file
+            prefix: service_prefix,
+            archive
         }));
         res.end();
     } catch(e) {
         res.send(JSON.stringify({
             success: false,
-            error: 'get archive file request error'
+            error: 'get archive by id request error'
         }));
         res.end();
-    }
+    }   
 })
 
 app.get('/archives', async (req, res) => {
@@ -181,7 +180,7 @@ app.get('/archives', async (req, res) => {
         const files = await get_archive(knex);
         res.send(JSON.stringify({
             success: true,
-            prefix: service_prefix + '/archives/',
+            prefix: service_prefix,
             files
         }));
         res.end();
@@ -189,8 +188,26 @@ app.get('/archives', async (req, res) => {
         console.log(e);
         res.send(JSON.stringify({
             success: false,
-            prefix: service_prefix + '/archives/',
+            prefix: service_prefix,
             error: 'get archive request error'
+        }));
+        res.end();
+    }
+})
+
+app.get('/systemconf', async (req, res) => {
+    try {
+        const systemconf = await get_latest_systemconf(knex);
+        res.send(JSON.stringify({
+            success: true,
+            systemconf
+        }));
+        res.end();
+    } catch(e) {
+        console.log(e);
+        res.send(JSON.stringify({
+            success: false,
+            error: 'get systemconf request error'
         }));
         res.end();
     }
