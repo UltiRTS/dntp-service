@@ -60,7 +60,10 @@ async function get_archive_file(knex, filename) {
 }
 
 async function get_archive_by_id(knex, id) {
-    const res = (await knex('archives').where('id', '=', id).select('id', 'zip_name','extract_to', 'zip_hash'));
+    const res = (await knex('archives')
+        .where('id', '=', id)
+        .select('id', 'zip_name','extract_to', 'zip_hash'));
+    
     return res[0];
 }
 

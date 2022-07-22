@@ -198,9 +198,13 @@ app.get('/archives', async (req, res) => {
 app.get('/systemconf', async (req, res) => {
     try {
         const systemconf = await get_latest_systemconf(knex);
+        console.log(systemconf);
         res.send(JSON.stringify({
+            prefix: service_prefix,
             success: true,
-            systemconf
+            systemconf,
+            engine: await get_archive_by_id(knex, systemconf.engine_archive_id),
+            mod: await get_archive_by_id(knex, systemconf.mod_archive_id),
         }));
         res.end();
     } catch(e) {
