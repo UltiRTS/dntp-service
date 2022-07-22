@@ -73,6 +73,8 @@ async function get_latest_systemconf(knex) {
         config_name: query.config_name,
         engine_archive_id: query.engine,
         mod_archive_id: query.mod,
+        engine_essentials_hash: query.engine_essentials_hash,
+        mod_essentials_hash: query.mod_essentials_hash,
     }
 
     return res;
