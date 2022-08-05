@@ -1,3 +1,8 @@
+async function latest_lobby(knex) {
+    return (await knex('lobby_info').orderBy('id').limit(1)
+        .select('id', 'version', 'lobby_name', 'lobby_hash'))[0];
+}
+
 async function vague_search(knex, name) {
     return await knex('maps').where('map_name', 'like', '%' + name + '%')
         .select('id', 'map_name', 'map_filename', 'minimap_filename', 'map_hash');
@@ -93,5 +98,6 @@ module.exports = {
     get_archive_file,
     max_batch,
     get_latest_systemconf,
-    get_archive_by_id
+    get_archive_by_id,
+    latest_lobby
 }

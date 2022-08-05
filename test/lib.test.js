@@ -1,9 +1,14 @@
-const {vague_search, batch_filter, get_map_by_id, get_archive} = require('../lib');
-const {dntpWorkDir}=  require('../config');
-const knex = require('knex')({
-    client: 'sqlite3',
+const {vague_search, batch_filter, get_map_by_id, get_archive, latest_lobby} = require('../lib');
+const Knex = require('knex');
+const {mysql_dbname, mysql_username, mysql_password} = require('../config');
+const knex = Knex({
+    client: 'mysql',
     connection: {
-        filename: dntpWorkDir + '/info.db'
+        host: '127.0.0.1',
+        port: 3306,
+        user: mysql_username,
+        password: mysql_password,
+        database: mysql_dbname
     }
 })
 
@@ -22,6 +27,10 @@ const main = async () => {
     console.log(typeof get_archive);
     res = await get_archive(knex);
     console.log('==============================');
+    console.log(res);
+
+    console.log('==============================');
+    res = await latest_lobby(knex);
     console.log(res);
     
     knex.destroy();

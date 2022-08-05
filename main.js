@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const Knex = require('knex');
 const {port, mysql_dbname, mysql_username, mysql_password, service_prefix} = require('./config');
-const {vague_search, batch_filter, check_ligal, exists, get_map_by_id, get_archive, get_archive_by_id, max_batch, get_latest_systemconf} = require('./lib');
+const {vague_search, batch_filter, check_ligal, exists, get_map_by_id, get_archive, get_archive_by_id, max_batch, get_latest_systemconf, latest_lobby} = require('./lib');
 
 var knex = Knex({
     client: 'mysql',
@@ -212,6 +212,25 @@ app.get('/systemconf', async (req, res) => {
         res.send(JSON.stringify({
             success: false,
             error: 'get systemconf request error'
+        }));
+        res.end();
+    }
+})
+
+app.get('/lobby', async (req, res) => {
+    try {
+        const lobby = await latest_lobby(knex);
+        res.send(JSON.stringify({
+            success: true,
+            prefix: service_prefix,
+            lobby
+        }));
+        res.end();
+    } catch(e) {
+        console.log(e);
+        res.send(JSON.stringify({
+            success: false,
+            error: 'get lobby request error'
         }));
         res.end();
     }
