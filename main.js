@@ -195,9 +195,11 @@ app.get('/archives', async (req, res) => {
     }
 })
 
-app.get('/systemconf', async (req, res) => {
+app.get('/systemconf/:type', async (req, res) => {
     try {
-        const systemconf = await get_latest_systemconf(knex);
+        const {type} = req.params;
+        console.log(type);
+        const systemconf = await get_latest_systemconf(knex, type);
         console.log(systemconf);
         res.send(JSON.stringify({
             prefix: service_prefix,
@@ -217,9 +219,10 @@ app.get('/systemconf', async (req, res) => {
     }
 })
 
-app.get('/lobby', async (req, res) => {
+app.get('/lobby/:type', async (req, res) => {
     try {
-        const lobby = await latest_lobby(knex);
+        const type = req.params.type;
+        const lobby = await latest_lobby(knex, type);
         res.send(JSON.stringify({
             success: true,
             prefix: service_prefix,

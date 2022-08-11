@@ -1,6 +1,6 @@
-async function latest_lobby(knex) {
-    return (await knex('lobby_info').orderBy('id').limit(1)
-        .select('id', 'version', 'lobby_name', 'lobby_hash'))[0];
+async function latest_lobby(knex, type) {
+    return (await knex('lobby_info').where('_type','=', type).orderBy('id').limit(1)
+        .select('id', 'version', 'lobby_name', 'lobby_hash', '_type'))[0];
 }
 
 async function vague_search(knex, name) {
@@ -72,9 +72,9 @@ async function get_archive_by_id(knex, id) {
     return res[0];
 }
 
-async function get_latest_systemconf(knex) {
+async function get_latest_systemconf(knex, type) {
 
-    const query = (await knex('system_config').orderBy('id', 'desc').limit(1))[0];
+    const query = (await knex('system_config').where('_type', '=', type).orderBy('id').limit(1))[0];
 
     const res = {
         id: query.id,
@@ -83,6 +83,7 @@ async function get_latest_systemconf(knex) {
         mod_archive_id: query.mod,
         engine_essentials_hash: query.engine_essentials_hash,
         mod_essentials_hash: query.mod_essentials_hash,
+        _type: query._type
     }
 
     return res;
