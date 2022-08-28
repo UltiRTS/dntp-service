@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const Knex = require('knex');
 const {port, mysql_dbname, mysql_username, mysql_password, service_prefix} = require('./config');
-const {vague_search, batch_filter, check_ligal, exists, get_map_by_id, get_archive, get_archive_by_id, max_batch, get_latest_systemconf, latest_lobby} = require('./lib');
+const {vague_search, batch_filter, check_ligal, exists, get_map_by_id, get_archive, get_archive_by_id, max_batch, get_latest_systemconf, latest_lobby, get_mods} = require('./lib');
 
 var knex = Knex({
     client: 'mysql',
@@ -237,6 +237,23 @@ app.get('/lobby/:type', async (req, res) => {
         }));
         res.end();
     }
+})
+
+app.get('/mods', async(req, res) =>{
+    try {
+
+        const mods = await get_mods(knex);
+        res.send(JSON.stringify({
+            success: true,
+            mods
+        }))
+    } catch(e) {
+        res.send(JSON.stringify({
+            success: false,
+            mods: []
+        }))
+    }
+    res.end();
 })
 
 app.listen(port, () => {

@@ -64,6 +64,13 @@ async function get_archive_file(knex, filename) {
     return res[0];
 }
 
+async function get_mods(knex) {
+    const res = (await knex('mods')
+        .select('id', 'name', 'archive', 'version'));
+    
+    return res;
+}
+
 async function get_archive_by_id(knex, id) {
     const res = (await knex('archives')
         .where('id', '=', id)
@@ -100,5 +107,6 @@ module.exports = {
     max_batch,
     get_latest_systemconf,
     get_archive_by_id,
-    latest_lobby
+    latest_lobby,
+    get_mods
 }
