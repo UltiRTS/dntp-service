@@ -66,7 +66,7 @@ async function get_archive_file(knex, filename) {
 
 async function get_mods(knex) {
     const res = (await knex('mods')
-        .select('id', 'name', 'archive', 'version'));
+        .select('id', 'name', 'archive', 'version', 'folder_hash'));
     
     return res;
 }
